@@ -1,4 +1,4 @@
-# api-mock-app
+# api-mock-up
 
 Emulates REST API services by mapping API Request endpoints to predefined API Response values.
 
@@ -11,13 +11,13 @@ Emulates REST API services by mapping API Request endpoints to predefined API Re
 Using NPM:
 
 ```bash
-npm install -D api-mock-app
+npm install -D api-mock-up
 ```
 
 or
 
 ```bash
-npm install -g api-mock-app
+npm install -g api-mock-up
 ```
 
 to instal it globally.
@@ -27,7 +27,7 @@ to instal it globally.
 ### CLI Usage:
 
 ```bash
-api-mock-app [options]
+api-mock-up[options]
 ```
 
 ### Options:
@@ -231,27 +231,27 @@ Here is an example of API Configuration File:
 #### Launching the app with an API Configuration file
 
 ```bash
-api-mock-app -f ~/config.json
+api-mock-up -f ~/config.json
 ```
 
 #### Launching the app with an API Configuration file and a port number
 
 ```bash
-api-mock-app -f ~/config.json -p 1234
+api-mock-up -f ~/config.json -p 1234
 ```
 
 #### Launching the app with another service in parallel
 
-A module, such as `concurrently`, can help launch the `api-mock-app` service in parallel with another app development service, such as a React development server (in the case of a React app).
+A module, such as `concurrently`, can help launch the `api-mock-up` service in parallel with another app development service, such as a React development server (in the case of a React app).
 
 ```bash
-concurrently --kill-others "npm start" "api-mock-app -f configFile.json -p 9009"
+concurrently --kill-others "npm start" "api-mock-up -f configFile.json -p 9009"
 ```
 
 The command above can easily be defined as a `NPM` script, such as the following
 
 ```json
-"start:dev": "concurrently --kill-others \"npm start\" \"api-mock-app -f ~/configFile.json -p 1234\"",
+"start:dev": "concurrently --kill-others \"npm start\" \"api-mock-up -f ~/configFile.json -p 1234\"",
 ```
 
 and included in the `package.json` file, as in the following example:
@@ -263,7 +263,7 @@ and included in the `package.json` file, as in the following example:
   "scripts": {
     ...
     "start": "react-app-rewired start",
-    "start:dev": "concurrently --kill-others \"npm start\" \"api-mock-app -f ~/configFile.json -p 1234\"",
+    "start:dev": "concurrently --kill-others \"npm start\" \"api-mock-up -f ~/configFile.json -p 1234\"",
     ...
   },
   ...

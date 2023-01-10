@@ -1,10 +1,10 @@
 {
-  "name": "api-mock-app",
+  "name": "api-mock-up",
   "version": "1.0.0",
   "description": "Emulates REST API services by mapping API Request endpoints to predefined API Response values.",
   "main": "dist/index",
   "bin": {
-    "api-mock-app": "./bin/api-mock-app"
+    "api-mock-up": "./bin/api-mock-up"
   },
   "scripts": {
     "prebuild": "npm run clean",
@@ -29,6 +29,10 @@
     "service",
     "server"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luciVuc/api-mock-up"
+  },
   "author": "Lucian Vuc (https://github.com/luciVuc)",
   "license": "ISC",
   "dependencies": {
