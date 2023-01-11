@@ -4,7 +4,7 @@ Emulates REST API services by mapping API Request endpoints to predefined API Re
 
 ## Version
 
-1.0.1
+1.0.2
 
 ## Installation
 
