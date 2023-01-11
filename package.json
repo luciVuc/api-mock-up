@@ -1,6 +1,6 @@
 {
   "name": "api-mock-up",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Emulates REST API services by mapping API Request endpoints to predefined API Response values.",
   "main": "dist/index",
   "bin": {
@@ -43,6 +43,7 @@
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "path": "^0.12.7",
+    "rimraf": "^3.0.2",
     "uuid": "^9.0.0",
     "yargs": "^17.6.2"
   },
@@ -58,7 +59,6 @@
     "concurrently": "^7.6.0",
     "jest": "^29.3.1",
     "nodemon": "^2.0.20",
-    "rimraf": "^3.0.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
