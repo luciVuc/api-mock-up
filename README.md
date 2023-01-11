@@ -4,7 +4,7 @@ Emulates REST API services by mapping API Request endpoints to predefined API Re
 
 ## Version
 
-1.0.2
+1.0.3
 
 ## Installation
 
@@ -20,7 +20,7 @@ or
 npm install -g api-mock-up
 ```
 
-to instal it globally.
+to install it globally.
 
 ## Usage
 
