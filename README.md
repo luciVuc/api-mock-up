@@ -88,6 +88,24 @@ This JSON document must match the following JSON Schema:
       "required": ["url"]
     },
 
+    "APIServiceEndPointResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "anyOf": [
+            { "type": "array" },
+            { "type": "string" },
+            { "type": "number" },
+            { "type": "integer" },
+            { "type": "boolean" },
+            { "type": "object" },
+            { "type": "null" },
+          ],
+        },
+      },
+      "required": ["payload"],
+    }
+
     "APIServiceEndPoint": {
       "type": "object",
       "properties": {
@@ -95,14 +113,7 @@ This JSON document must match the following JSON Schema:
           "$ref": "#/$defs/APIServiceEndPointRequest"
         },
         "response": {
-          "anyOf": [
-            { "type": "string" },
-            { "type": "number" },
-            { "type": "integer" },
-            { "type": "boolean" },
-            { "type": "object" },
-            { "type": "null" }
-          ]
+          "$ref": "#/$defs/APIServiceEndPointResponse",
         }
       },
       "required": ["request", "response"]
@@ -158,75 +169,149 @@ Here is an example of API Configuration File:
   "endPoints": [
     {
       "request": {
-        "path": "/"
+        "path": "/api"
       },
       "response": {
-        "value": "Welcome!"
+        "payload": [
+          {
+            "value": "Hello!"
+          },
+          {
+            "value": "Welcome!"
+          }
+        ]
       }
     },
     {
       "request": {
-        "path": "/user/admin",
+        "path": "/api/joke"
+      },
+      "response": {
+        "payload": {
+          "$ref": "https://v2.jokeapi.dev/joke/Programming"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/api/jokes"
+      },
+      "response": {
+        "payload": [
+          {
+            "$ref": "https://v2.jokeapi.dev/joke/Programming"
+          },
+          {
+            "$ref": "https://v2.jokeapi.dev/joke/Programming"
+          }
+        ]
+      }
+    },
+    {
+      "request": {
+        "path": "/api/admin",
         "method": "GET"
       },
       "response": {
-        "id": 1,
-        "name": "Admin User"
+        "payload": {
+          "id": 1,
+          "name": "Admin User"
+        }
       }
     },
     {
       "request": {
-        "path": "/user",
+        "path": "/api/users",
+        "queryParams": {}
+      },
+      "response": {
+        "payload": [
+          {
+            "id": 1,
+            "name": "John"
+          },
+          {
+            "id": 2,
+            "name": "Jane Doe"
+          }
+        ]
+      }
+    },
+    {
+      "request": {
+        "path": "/api/user",
         "method": "POST"
       },
       "response": {
-        "id": 3,
-        "name": "New User"
+        "payload": {
+          "$ref": "test/responses/new-user.json"
+        }
       }
     },
     {
       "request": {
-        "path": "/user/3",
+        "path": "/api/user/3",
         "method": "PUT"
       },
       "response": {
-        "id": 3,
-        "name": "Updated New User"
+        "payload": {
+          "id": 3,
+          "name": "Updated New User"
+        }
       }
     },
     {
       "request": {
-        "path": "/user/:id",
+        "path": "/api/user/:id",
         "method": "PUT"
       },
       "response": {
-        "id": 4,
-        "name": "Updated a User"
+        "payload": {
+          "$ref": "test/responses/updated-user.json"
+        }
       }
     },
     {
       "request": {
-        "path": "/user/1",
+        "path": "/api/user/1",
         "method": "GET"
       },
       "response": {
-        "id": 1,
-        "name": "John"
+        "payload": {
+          "id": 1,
+          "name": "John"
+        }
       }
     },
     {
       "request": {
-        "path": "/user/2",
+        "path": "/api/user/2",
         "method": "GET"
       },
       "response": {
-        "id": 1,
-        "name": "Jane Doe"
+        "payload": {
+          "id": 2,
+          "name": "Jane Doe"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/api/user/:key",
+        "method": "GET"
+      },
+      "response": {
+        "payload": {
+          "id": "xyz",
+          "name": "Any One"
+        }
       }
     }
   ]
 }
 ```
+
+Note: If the `payload` contains the field `$ref`, the `$ref` is expected to be the path or the url to an external resource located in the local file system or on the web. All relative paths will be resolved based on the `process.cwd()` (the current working directory).
 
 #### Launching the app with an API Configuration file
 

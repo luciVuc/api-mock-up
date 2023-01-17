@@ -1,0 +1,145 @@
+{
+  "name": "demo",
+  "endPoints": [
+    {
+      "request": {
+        "path": "/api"
+      },
+      "response": {
+        "payload": [
+          {
+            "value": "Hello!"
+          },
+          {
+            "value": "Welcome!"
+          }
+        ]
+      }
+    },
+    {
+      "request": {
+        "path": "/api/joke"
+      },
+      "response": {
+        "payload": {
+          "$ref": "https://v2.jokeapi.dev/joke/Programming"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/api/jokes"
+      },
+      "response": {
+        "payload": [
+          {
+            "$ref": "https://v2.jokeapi.dev/joke/Programming"
+          },
+          {
+            "$ref": "https://v2.jokeapi.dev/joke/Programming"
+          }
+        ]
+      }
+    },
+    {
+      "request": {
+        "path": "/api/admin",
+        "method": "GET"
+      },
+      "response": {
+        "payload": {
+          "id": 1,
+          "name": "Admin User"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/api/users",
+        "queryParams": {}
+      },
+      "response": {
+        "payload": [
+          {
+            "id": 1,
+            "name": "John"
+          },
+          {
+            "id": 2,
+            "name": "Jane Doe"
+          }
+        ]
+      }
+    },
+    {
+      "request": {
+        "path": "/api/user",
+        "method": "POST"
+      },
+      "response": {
+        "payload": {
+          "$ref": "test/responses/new-user.json"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/api/user/3",
+        "method": "PUT"
+      },
+      "response": {
+        "payload": {
+          "id": 3,
+          "name": "Updated New User"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/api/user/:id",
+        "method": "PUT"
+      },
+      "response": {
+        "payload": {
+          "$ref": "test/responses/updated-user.json"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/api/user/1",
+        "method": "GET"
+      },
+      "response": {
+        "payload": {
+          "id": 1,
+          "name": "John"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/api/user/2",
+        "method": "GET"
+      },
+      "response": {
+        "payload": {
+          "id": 2,
+          "name": "Jane Doe"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/api/user/:key",
+        "method": "GET"
+      },
+      "response": {
+        "payload": {
+          "id": "xyz",
+          "name": "Any One"
+        }
+      }
+    }
+  ]
+}

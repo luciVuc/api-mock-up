@@ -1,5 +1,6 @@
 import { Response, Request } from "express";
 import asyncHandler from "express-async-handler";
+import { APIServiceEndPointResponse } from "../api";
 
 export const apiConfig = async (response: APIServiceEndPointResponse) => {
   return asyncHandler(async (req: Request, res: Response) => {

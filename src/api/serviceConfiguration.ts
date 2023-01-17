@@ -7,7 +7,7 @@ const SVC_CONFIG_SCHEMA = APIServiceConfiguration.SCHEMA;
 
 export async function getServiceConfiguration(filename: string) {
   return new Promise<APIServiceConfiguration | Error>((resolve, reject) => {
-    readFile(filename, "utf8", (error, fileContent) => {
+    readFile(filename, "utf8", async (error, fileContent) => {
       if (error) {
         return reject(error as Error);
       }
@@ -20,7 +20,8 @@ export async function getServiceConfiguration(filename: string) {
           new Error(JSON.stringify({ validationErrors: validate.errors }))
         );
       }
-      return resolve(data as APIServiceConfiguration);
+      const svcConfig = await APIServiceConfiguration.create(data);
+      return resolve(svcConfig);
     });
   });
 }

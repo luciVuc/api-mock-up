@@ -12,13 +12,22 @@ declare interface IAPIServiceEndPointRequest {
   body?: Record<string, string | number | boolean>;
 }
 
-declare type APIServiceEndPointResponse =
-  | Record<string, string | number | boolean | object | null>
+declare type TAPIServiceEndPointResponseRef = {
+  $ref: string;
+};
+
+declare type TAPIServiceEndPointResponse =
+  | Record<string, string | number | boolean | object | null | any[]>
+  | any[]
   | string
   | number
   | boolean
   | object
   | null;
+
+declare interface IAPIServiceEndPointResponse {
+  payload: TAPIServiceEndPointResponseRef | TAPIServiceEndPointResponse;
+}
 
 declare class IAPIServiceEndPoint {
   public request: string | IAPIServiceEndPointRequest;
