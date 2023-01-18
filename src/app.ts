@@ -5,13 +5,13 @@ import { errorHandler } from "./middleware/error";
 import { exit } from "process";
 import { resolve } from "path";
 import { apiConfigRoutes, catchAllRoutes, homeRoute, pingRoutes } from "./routes";
-import { getServiceConfiguration } from "./api/serviceConfiguration";
+import { configureService } from "./api";
 
 export const init = async (
   configFile: string,
   port: number
 ): Promise<Express> => {
-  const apiConfigData = await getServiceConfiguration(configFile);
+  const apiConfigData = await configureService(configFile);
 
   if (apiConfigData instanceof Error) {
     console.error(apiConfigData);

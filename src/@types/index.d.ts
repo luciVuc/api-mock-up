@@ -1,10 +1,10 @@
-declare interface IAPIServiceError {
+declare interface IServiceError {
   message: string;
   code?: string;
   stack?: string;
 }
 
-declare interface IAPIServiceEndPointRequest {
+declare interface IServiceEndPointRequest {
   path: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
   queryParams?: Record<string, string | number | boolean>;
@@ -12,11 +12,11 @@ declare interface IAPIServiceEndPointRequest {
   body?: Record<string, string | number | boolean>;
 }
 
-declare type TAPIServiceEndPointResponseRef = {
+declare type TServiceEndPointResponseRef = {
   $ref: string;
 };
 
-declare type TAPIServiceEndPointResponse =
+declare type TServiceEndPointResponse =
   | Record<string, string | number | boolean | object | null | any[]>
   | any[]
   | string
@@ -25,16 +25,17 @@ declare type TAPIServiceEndPointResponse =
   | object
   | null;
 
-declare interface IAPIServiceEndPointResponse {
-  payload: TAPIServiceEndPointResponseRef | TAPIServiceEndPointResponse;
+declare interface IServiceEndPointResponse {
+  payload: TServiceEndPointResponseRef | TServiceEndPointResponse;
 }
 
-declare class IAPIServiceEndPoint {
-  public request: string | IAPIServiceEndPointRequest;
+declare class IServiceEndPoint {
+  public request: string | IServiceEndPointRequest;
   public response: APIServiceEndPointResponse;
 }
 
-declare interface IAPIServiceConfiguration {
+declare interface IServiceConfiguration {
   name: string;
-  endPoints: IAPIServiceEndPoint[];
+  description?: string;
+  endPoints: IServiceEndPoint[];
 }

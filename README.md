@@ -4,7 +4,7 @@ Emulates REST API services by mapping API Request endpoints to predefined API Re
 
 ## Version
 
-1.0.3
+1.0.4
 
 ## Installation
 
@@ -24,7 +24,7 @@ to install it globally.
 
 ## Usage
 
-### CLI Usage:
+### CLI Usage
 
 ```bash
 api-mock-up[options]
@@ -53,11 +53,14 @@ This JSON document must match the following JSON Schema:
     "name": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+    },
     "endPoints": {
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "$ref": "#/$defs/APIServiceEndPoint"
+        "$ref": "#/$defs/ServiceEndPoint"
       }
     }
   },
@@ -65,7 +68,7 @@ This JSON document must match the following JSON Schema:
   "required": ["name", "endPoints"],
 
   "$defs": {
-    "APIServiceEndPointRequest": {
+    "ServiceEndPointRequest": {
       "type": "object",
       "properties": {
         "path": {
@@ -85,10 +88,10 @@ This JSON document must match the following JSON Schema:
           "type": "object"
         }
       },
-      "required": ["url"]
+      "required": ["path"]
     },
 
-    "APIServiceEndPointResponse": {
+    "ServiceEndPointResponse": {
       "type": "object",
       "properties": {
         "payload": {
@@ -106,20 +109,20 @@ This JSON document must match the following JSON Schema:
       "required": ["payload"],
     }
 
-    "APIServiceEndPoint": {
+    "ServiceEndPoint": {
       "type": "object",
       "properties": {
         "request": {
-          "$ref": "#/$defs/APIServiceEndPointRequest"
+          "$ref": "#/$defs/ServiceEndPointRequest"
         },
         "response": {
-          "$ref": "#/$defs/APIServiceEndPointResponse",
+          "$ref": "#/$defs/ServiceEndPointResponse",
         }
       },
       "required": ["request", "response"]
     },
 
-    "APIServiceError": {
+    "ServiceError": {
       "type": "object",
       "properties": {
         "message": {
@@ -397,7 +400,7 @@ returns
 
 ```json
 {
-  "action": "GET_DATA",
+  "action": "DATA",
   "payload": {
     "id": 1,
     "name": "John"
@@ -416,9 +419,9 @@ returns
 
 ```json
 {
-  "action": "GET_DATA",
+  "action": "DATA",
   "payload": {
-    "error": "GET_DATA: Resource not found"
+    "error": "Resource not found"
   },
   "status": 404
 }

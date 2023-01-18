@@ -1,28 +1,72 @@
-import Ajv from "ajv";
-import { readFile } from "fs";
-import APIServiceConfiguration from "./APIServiceConfiguration";
+import {
+  createServiceEndPoint,
+  serviceEndPointSchema,
+} from "./ServiceEndPoint";
+import { serviceEndPointRequestSchema } from "./ServiceEndPointRequest";
+import { serviceEndPointResponseSchema } from "./ServiceEndPointResponse";
+import { ServiceError, serviceErrorSchema } from "./ServiceError";
 
-const ajv = new Ajv();
-const SVC_CONFIG_SCHEMA = APIServiceConfiguration.SCHEMA;
+export class ServiceConfiguration implements IServiceConfiguration {
+  public name: string;
+  public description?: string;
+  public endPoints: IServiceEndPoint[];
 
-export async function getServiceConfiguration(filename: string) {
-  return new Promise<APIServiceConfiguration | Error>((resolve, reject) => {
-    readFile(filename, "utf8", async (error, fileContent) => {
-      if (error) {
-        return reject(error as Error);
-      }
+  private constructor({ name, description, endPoints }: IServiceConfiguration) {
+    this.name = name;
+    this.description = description;
+    this.endPoints = endPoints;
+  }
 
-      const data = JSON.parse(fileContent);
-      const validate = ajv.compile<APIServiceConfiguration>(SVC_CONFIG_SCHEMA);
+  static async create({ name, description, endPoints }: IServiceConfiguration) {
+    const promises = endPoints.reduce((arr, endPoint) => {
+      arr.push(createServiceEndPoint(endPoint));
+      return arr;
+    }, [] as Promise<IServiceEndPoint>[]);
 
-      if (!validate(data)) {
-        return reject(
-          new Error(JSON.stringify({ validationErrors: validate.errors }))
-        );
-      }
-      const svcConfig = await APIServiceConfiguration.create(data);
-      return resolve(svcConfig);
-    });
-  });
+    try {
+      return new ServiceConfiguration({
+        name,
+        description,
+        endPoints: await Promise.all(promises),
+      });
+    } catch (error) {
+      return new ServiceError({
+        message: error as string,
+        code: "SERVICE_CONFIGURATION_ERROR",
+      });
+    }
+  }
+
+  static get SCHEMA() {
+    return {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+        },
+        description: {
+          type: "string",
+        },
+        endPoints: {
+          type: "array",
+          uniqueItems: true,
+          items: {
+            $ref: "#/$defs/ServiceEndPoint",
+          },
+        },
+      },
+      required: ["name", "endPoints"],
+      $defs: {
+        ServiceEndPointRequest: serviceEndPointRequestSchema,
+        ServiceEndPointResponse: serviceEndPointResponseSchema,
+        ServiceEndPoint: serviceEndPointSchema,
+        ServiceError: serviceErrorSchema,
+      },
+    };
+  }
 }
-export default { getServiceConfiguration };
+
+export default ServiceConfiguration;
+export const serviceConfigurationSchema = ServiceConfiguration.SCHEMA;
+export const createServiceConfiguration = ServiceConfiguration.create;

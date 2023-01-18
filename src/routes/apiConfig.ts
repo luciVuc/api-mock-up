@@ -3,11 +3,11 @@ import { apiConfig } from "../controllers";
 
 const router: Router = Router();
 
-export default (apiConfigData: IAPIServiceConfiguration) => {
-  const { name, endPoints } = apiConfigData as IAPIServiceConfiguration;
+export default (apiConfigData: IServiceConfiguration) => {
+  const { name, endPoints } = apiConfigData as IServiceConfiguration;
 
   endPoints.forEach(async ({ request, response }, i) => {
-    const queryParams = (request as IAPIServiceEndPointRequest)?.queryParams;
+    const queryParams = (request as IServiceEndPointRequest)?.queryParams;
     const params = queryParams
       ? new URLSearchParams(queryParams as any).toString()
       : "";
