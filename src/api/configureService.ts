@@ -1,10 +1,11 @@
 import Ajv from "ajv";
 import { readFile } from "fs";
+import YAML from "yamljs";
 import {
   ServiceConfiguration,
   createServiceConfiguration,
   serviceConfigurationSchema,
-} from "./Service_Configuration";
+} from "./ServiceConfiguration";
 import { ServiceError } from "./ServiceError";
 
 const ajv = new Ajv();
@@ -17,7 +18,17 @@ export async function configureService(filename: string) {
         return reject(error as Error);
       }
 
-      const data = JSON.parse(fileContent);
+      let data;
+      try {
+        data = YAML.parse(fileContent);
+      } catch (error) {
+        try {
+          data = JSON.parse(fileContent);
+        } catch (error) {
+          return reject(error as Error)
+        }
+      }
+
       const validate = ajv.compile<ServiceConfiguration>(SVC_CONFIG_SCHEMA);
 
       if (!validate(data)) {
@@ -29,7 +40,7 @@ export async function configureService(filename: string) {
         );
       }
       const svcConfig = await createServiceConfiguration(data);
-      return resolve(svcConfig);
+      return resolve(svcConfig);  
     });
   });
 }

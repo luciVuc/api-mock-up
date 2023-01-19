@@ -4,7 +4,7 @@ Emulates REST API services by mapping API Request endpoints to predefined API Re
 
 ## Version
 
-1.0.5
+1.0.6
 
 ## Installation
 
@@ -36,12 +36,12 @@ api-mock-up[options]
 | ------------ | ----- | --------------------------------------------------------- | --------- | ---------- | ------- |
 | --configFile | -f    | The path to the API Configuration file                    | [string]  | [required] |         |
 | --port       | -p    | The port on which the server will listen for API requests | [number]  | [optional] | 3000    |
-| --version    |       | Show version number                                       | [boolean] |            |         |
-| --help       |       | Show help                                                 | [boolean] |            |         |
+| --version    | -v    | Show version number                                       | [boolean] |            |         |
+| --help       | -h    | Show help                                                 | [boolean] |            |         |
 
 ### The API Configuration File
 
-The API Configuration file is a JSON document that maps endpoint requests to their corresponding response values, and it is to be passed to the application as the `--configFile` (alias `-f`) launch parameter or as the `CONFIG_FILE` environment variable.
+The API Configuration file is a JSON (or YAML) document that maps endpoint requests to their corresponding response values, and it is to be passed to the application as the `--configFile` (alias `-f`) launch parameter or as the `CONFIG_FILE` environment variable.
 
 This JSON document must match the following JSON Schema:
 
@@ -144,6 +144,7 @@ This JSON document must match the following JSON Schema:
 As the JSON Schema above indicates, the API Configuration document consists of
 
 - `name` field - a `string` which is the name the service,
+- `description` field - an optional `string` which describes the service
 - `endPoints` field - an `array` which contains the collection of API endpoints to emulate.
 
 Each API endpoint must contain a `request` field and a `response` field.
@@ -164,11 +165,12 @@ The `response` field, on the other hand, is an object containing the type of CRU
 
 #### Defining an API Configuration File example
 
-Here is an example of API Configuration File:
+Here is an example of API Configuration File in JSON format:
 
 ```json
 {
   "name": "demo",
+  "description": "Api Mockup Demo",
   "endPoints": [
     {
       "request": {
@@ -312,6 +314,87 @@ Here is an example of API Configuration File:
     }
   ]
 }
+```
+
+And the same Configuration File in YAML format:
+
+```yml
+name: demo
+description: Api Mockup Demo
+endPoints:
+  - request:
+      path: "/api"
+    response:
+      payload:
+        - value: Hello!
+        - value: Welcome!
+  - request:
+      path: "/api/joke"
+    response:
+      payload:
+        "$ref": https://v2.jokeapi.dev/joke/Programming
+  - request:
+      path: "/api/jokes"
+    response:
+      payload:
+        - "$ref": https://v2.jokeapi.dev/joke/Programming
+        - "$ref": https://v2.jokeapi.dev/joke/Programming
+  - request:
+      path: "/api/admin"
+      method: GET
+    response:
+      payload:
+        id: 1
+        name: Admin User
+  - request:
+      path: "/api/users"
+      queryParams: {}
+    response:
+      payload:
+        - id: 1
+          name: John
+        - id: 2
+          name: Jane Doe
+  - request:
+      path: "/api/user"
+      method: POST
+    response:
+      payload:
+        "$ref": test/responses/new-user.json
+  - request:
+      path: "/api/user/3"
+      method: PUT
+    response:
+      payload:
+        id: 3
+        name: Updated New User
+  - request:
+      path: "/api/user/:id"
+      method: PUT
+    response:
+      payload:
+        "$ref": test/responses/updated-user.json
+  - request:
+      path: "/api/user/1"
+      method: GET
+    response:
+      payload:
+        id: 1
+        name: John
+  - request:
+      path: "/api/user/2"
+      method: GET
+    response:
+      payload:
+        id: 2
+        name: Jane Doe
+  - request:
+      path: "/api/user/:key"
+      method: GET
+    response:
+      payload:
+        id: xyz
+        name: Any One
 ```
 
 Note: If the `payload` contains the field `$ref`, the `$ref` is expected to be the path or the url to an external resource located in the local file system or on the web. All relative paths will be resolved based on the `process.cwd()` (the current working directory).

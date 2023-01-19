@@ -1,4 +1,3 @@
-import "colors";
 import yargs from "yargs";
 
 export const cli = async () => {
@@ -6,11 +5,9 @@ export const cli = async () => {
     .usage("Usage: $0 [options]")
     .option("f", {
       alias: "configFile",
-      describe:
-        "The path to the API Configuration file",
+      describe: "The path to the API Configuration file",
       type: "string",
       demandOption: true,
-      example: "$0 configFile ../../../mockAPI.json",
     })
     .option("p", {
       alias: "port",
@@ -18,8 +15,19 @@ export const cli = async () => {
       default: 3000,
       type: "number",
       demandOption: false,
-      example: "$0 configFile ../../../mockAPI.json",
     })
+    .example([
+      ["$0 --configFile ./test/mockAPI.json"],
+      ["$0 --configFile ./test/mockAPI.json --port 1234"],
+      ["$0 -f ./test/mockAPI.json"],
+      ["$0 -f ./test/mockAPI.json -p 1234"],
+      ["$0 --configFile ./test/mockAPI.yml"],
+      ["$0 --configFile ./test/mockAPI.yml --port 1234"],
+      ["$0 -f ./test/mockAPI.yml"],
+      ["$0 -f ./test/mockAPI.yml -p 1234"],
+    ])
+    .alias("version", "v")
+    .alias("help", "h")
     .help(true).argv;
 
   return argv;
