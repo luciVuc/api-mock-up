@@ -4,7 +4,7 @@ import {
   ServiceConfiguration,
   createServiceConfiguration,
   serviceConfigurationSchema,
-} from "./ServiceConfiguration";
+} from "./Service_Configuration";
 import { ServiceError } from "./ServiceError";
 
 const ajv = new Ajv();
