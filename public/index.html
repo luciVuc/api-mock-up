@@ -11,7 +11,504 @@
 
   <body>
     <div class="docs docs-theme-default">
-      <div
+      <div 
+        class="content markdown-body docs-container docs-active"
+        previewcontainer="true"
+        style="padding: 20px"
+      >
+        <h1 id="api-mock-up">api-mock-up</h1>
+        <p>Emulates REST API services by mapping API Request endpoints to predefined API Response values.</p>
+        <h2 id="version">Version</h2>
+        <p>1.0.8</p>
+        <h2 id="installation">Installation</h2>
+        <p>Using NPM:</p>
+        <pre><code class="language-bash">npm install -D api-mock-up</code></pre>
+        <p>or</p>
+        <pre><code class="language-bash">npm install -g api-mock-up</code></pre>
+        <p>to install it globally.</p>
+        <h2 id="usage">Usage</h2>
+        <h3 id="cli-usage">CLI Usage</h3>
+        <pre><code class="language-bash">api-mock-up[options]</code></pre>
+        <h3 id="options">Options:</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Options</th>
+              <th>Alias</th>
+              <th>Description</th>
+              <th>Type</th>
+              <th>Required</th>
+              <th>Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>--configFile</td>
+              <td>-f</td>
+              <td>The path to the API Configuration file</td>
+              <td>[string]</td>
+              <td>[required]</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>--port</td>
+              <td>-p</td>
+              <td>The port on which the server will listen for API requests</td>
+              <td>[number]</td>
+              <td>[optional]</td>
+              <td>3000</td>
+            </tr>
+            <tr>
+              <td>--version</td>
+              <td>-v</td>
+              <td>Show version number</td>
+              <td>[boolean]</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>--help</td>
+              <td>-h</td>
+              <td>Show help</td>
+              <td>[boolean]</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <h3 id="the-api-configuration-file">The API Configuration File</h3>
+        <p>The API Configuration file is a JSON (or YAML) document that maps endpoint requests to their corresponding response
+          values, and it is to be passed to the application as the <code>--configFile</code> (alias <code>-f</code>) launch
+          parameter or as the <code>CONFIG_FILE</code> environment variable.</p>
+        <p>This JSON document must match the following JSON Schema:</p>
+        <pre><code class="language-json">{
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                  },
+                  "endPoints": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "$ref": "#/$defs/ServiceEndPoint"
+                    }
+                  }
+                },
+              
+                "required": ["name", "endPoints"],
+              
+                "$defs": {
+                  "ServiceEndPointRequest": {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "method": {
+                        "type": "string",
+                        "enum": ["GET", "PATCH", "POST" "PUT", "DELETE"]
+                      },
+                      "queryParams": {
+                        "type": "object"
+                      },
+                      "headers": {
+                        "type": "object"
+                      },
+                      "body": {
+                        "type": "object"
+                      }
+                    },
+                    "required": ["path"]
+                  },
+              
+                  "ServiceEndPointResponse": {
+                    "type": "object",
+                    "properties": {
+                      "payload": {
+                        "anyOf": [
+                          { "type": "array" },
+                          { "type": "string" },
+                          { "type": "number" },
+                          { "type": "integer" },
+                          { "type": "boolean" },
+                          { "type": "object" },
+                          { "type": "null" },
+                        ],
+                      },
+                    },
+                    "required": ["payload"],
+                  }
+              
+                  "ServiceEndPoint": {
+                    "type": "object",
+                    "properties": {
+                      "request": {
+                        "$ref": "#/$defs/ServiceEndPointRequest"
+                      },
+                      "response": {
+                        "$ref": "#/$defs/ServiceEndPointResponse",
+                      }
+                    },
+                    "required": ["request", "response"]
+                  },
+              
+                  "ServiceError": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "code": {
+                        "type": "string"
+                      },
+                      "stack": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["message"]
+                  }
+                }
+              }</code></pre>
+        <p>As the JSON Schema above indicates, the API Configuration document consists of</p>
+        <ul>
+          <li><code>name</code> field - a <code>string</code> which is the name the service,</li>
+          <li><code>description</code> field - an optional <code>string</code> which describes the service</li>
+          <li><code>endPoints</code> field - an <code>array</code> which contains the collection of API endpoints to emulate.
+          </li>
+        </ul>
+        <p>Each API endpoint must contain a <code>request</code> field and a <code>response</code> field.</p>
+        <p>The <code>request</code> field must contain the <code>path</code> (or the url) of the API endpoint
+          and the HTTP <code>method</code>, as one of <code>"GET" | "PATCH" | "POST" | "PUT" | "DELETE"</code> options.
+          If the method is not provided, the <code>"GET"</code> option will be used by default.</p>
+        <p>Additionally, the <code>request</code> may contain optional fields like:</p>
+        <ul>
+          <li><code>queryParams</code> - a key-value pair map of URL Query parameters,</li>
+          <li><code>headers</code> - a key-value pair map of HTTP Request Headers,</li>
+          <li><code>body</code> - a key-value pair map of HTTP Request body</li>
+        </ul>
+        <p>The <code>response</code> field, on the other hand, is an object containing the type of CRUD action performed (as
+          <code>string</code>), the status code (as <code>number</code>), and the payload. The payload can be either an error,
+          in case of failure, or, in case of success, the predefined value of any valid JSON type, such as
+          <code>string</code>, <code>number</code>, <code>boolean</code>, <code>object</code>, <code>null</code>, etc.</p>
+        <h3 id="examples">Examples</h3>
+        <h4 id="defining-an-api-configuration-file-example">Defining an API Configuration File example</h4>
+        <p>Here is an example of API Configuration File in JSON format:</p>
+        <pre><code class="language-json">{
+                "name": "demo",
+                "description": "Api Mockup Demo",
+                "endPoints": [
+                  {
+                    "request": {
+                      "path": "/api"
+                    },
+                    "response": {
+                      "payload": [
+                        {
+                          "value": "Hello!"
+                        },
+                        {
+                          "value": "Welcome!"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "request": {
+                      "path": "/api/joke"
+                    },
+                    "response": {
+                      "payload": {
+                        "$ref": "https://v2.jokeapi.dev/joke/Programming"
+                      }
+                    }
+                  },
+                  {
+                    "request": {
+                      "path": "/api/jokes"
+                    },
+                    "response": {
+                      "payload": [
+                        {
+                          "$ref": "https://v2.jokeapi.dev/joke/Programming"
+                        },
+                        {
+                          "$ref": "https://v2.jokeapi.dev/joke/Programming"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "request": {
+                      "path": "/api/admin",
+                      "method": "GET"
+                    },
+                    "response": {
+                      "payload": {
+                        "id": 1,
+                        "name": "Admin User"
+                      }
+                    }
+                  },
+                  {
+                    "request": {
+                      "path": "/api/users",
+                      "queryParams": {}
+                    },
+                    "response": {
+                      "payload": [
+                        {
+                          "id": 1,
+                          "name": "John"
+                        },
+                        {
+                          "id": 2,
+                          "name": "Jane Doe"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "request": {
+                      "path": "/api/user",
+                      "method": "POST"
+                    },
+                    "response": {
+                      "payload": {
+                        "$ref": "test/responses/new-user.json"
+                      }
+                    }
+                  },
+                  {
+                    "request": {
+                      "path": "/api/user/3",
+                      "method": "PUT"
+                    },
+                    "response": {
+                      "payload": {
+                        "id": 3,
+                        "name": "Updated New User"
+                      }
+                    }
+                  },
+                  {
+                    "request": {
+                      "path": "/api/user/:id",
+                      "method": "PUT"
+                    },
+                    "response": {
+                      "payload": {
+                        "$ref": "test/responses/updated-user.json"
+                      }
+                    }
+                  },
+                  {
+                    "request": {
+                      "path": "/api/user/1",
+                      "method": "GET"
+                    },
+                    "response": {
+                      "payload": {
+                        "id": 1,
+                        "name": "John"
+                      }
+                    }
+                  },
+                  {
+                    "request": {
+                      "path": "/api/user/2",
+                      "method": "GET"
+                    },
+                    "response": {
+                      "payload": {
+                        "id": 2,
+                        "name": "Jane Doe"
+                      }
+                    }
+                  },
+                  {
+                    "request": {
+                      "path": "/api/user/:key",
+                      "method": "GET"
+                    },
+                    "response": {
+                      "payload": {
+                        "id": "xyz",
+                        "name": "Any One"
+                      }
+                    }
+                  }
+                ]
+              }</code></pre>
+        <p>And the same Configuration File in YAML format:</p>
+        <pre><code class="language-yml">name: demo
+              description: Api Mockup Demo
+              endPoints:
+                - request:
+                    path: "/api"
+                  response:
+                    payload:
+                      - value: Hello!
+                      - value: Welcome!
+                - request:
+                    path: "/api/joke"
+                  response:
+                    payload:
+                      "$ref": https://v2.jokeapi.dev/joke/Programming
+                - request:
+                    path: "/api/jokes"
+                  response:
+                    payload:
+                      - "$ref": https://v2.jokeapi.dev/joke/Programming
+                      - "$ref": https://v2.jokeapi.dev/joke/Programming
+                - request:
+                    path: "/api/admin"
+                    method: GET
+                  response:
+                    payload:
+                      id: 1
+                      name: Admin User
+                - request:
+                    path: "/api/users"
+                    queryParams: {}
+                  response:
+                    payload:
+                      - id: 1
+                        name: John
+                      - id: 2
+                        name: Jane Doe
+                - request:
+                    path: "/api/user"
+                    method: POST
+                  response:
+                    payload:
+                      "$ref": test/responses/new-user.json
+                - request:
+                    path: "/api/user/3"
+                    method: PUT
+                  response:
+                    payload:
+                      id: 3
+                      name: Updated New User
+                - request:
+                    path: "/api/user/:id"
+                    method: PUT
+                  response:
+                    payload:
+                      "$ref": test/responses/updated-user.json
+                - request:
+                    path: "/api/user/1"
+                    method: GET
+                  response:
+                    payload:
+                      id: 1
+                      name: John
+                - request:
+                    path: "/api/user/2"
+                    method: GET
+                  response:
+                    payload:
+                      id: 2
+                      name: Jane Doe
+                - request:
+                    path: "/api/user/:key"
+                    method: GET
+                  response:
+                    payload:
+                      id: xyz
+                      name: Any One</code></pre>
+        <p>Note: If the <code>payload</code> contains the field <code>$ref</code>, the <code>$ref</code> is expected to be the
+          path or the url to an external resource located in the local file system or on the web. All relative paths will be
+          resolved based on the <code>process.cwd()</code> (the current working directory).</p>
+        <h4 id="launching-the-app-with-an-api-configuration-file">Launching the app with an API Configuration file</h4>
+        <pre><code class="language-bash">api-mock-up -f ~/config.json</code></pre>
+        <h4 id="launching-the-app-with-an-api-configuration-file-and-a-port-number">Launching the app with an API
+          Configuration file and a port number</h4>
+        <pre><code class="language-bash">api-mock-up -f ~/config.json -p 1234</code></pre>
+        <h4 id="launching-the-app-with-another-service-in-parallel">Launching the app with another service in parallel</h4>
+        <p>A module, such as <code>concurrently</code>, can help launch the <code>api-mock-up</code> service in parallel with
+          another app development service, such as a React development server (in the case of a React app).</p>
+        <pre><code class="language-bash">concurrently --kill-others "npm start" "api-mock-up -f configFile.json -p 9009"</code></pre>
+        <p>The command above can easily be defined as a <code>NPM</code> script, such as the following</p>
+        <pre><code class="language-json">"start:dev": "concurrently --kill-others \"npm start\" \"api-mock-up -f ~/configFile.json -p 1234\"",</code></pre>
+        <p>and included in the <code>package.json</code> file, as in the following example:</p>
+        <pre><code class="language-json">// package.json
+              {
+                ...
+                "scripts": {
+                  ...
+                  "start": "react-app-rewired start",
+                  "start:dev": "concurrently --kill-others \"npm start\" \"api-mock-up -f ~/configFile.json -p 1234\"",
+                  ...
+                },
+                ...
+              }</code></pre>
+        <h3 id="request-examples">Request examples</h3>
+        <p>Response examples for requests to an instance using the API Configuration file in the example above:</p>
+        <ul>
+          <li>GET request</li>
+        </ul>
+        <pre><code class="language-js">http://localhost:3000/</code></pre>
+        <p>returns this documentation page.</p>
+        <ul>
+          <li>GET request</li>
+        </ul>
+        <pre><code class="language-js">http://localhost:3000/ping
+              //or
+              http://localhost:3000/api/ping</code></pre>
+        <p>returns</p>
+        <pre><code class="language-json">{
+                "action": "PING",
+                "payload": {
+                  "message": "PING: PONG"
+                },
+                "status": 200
+              }</code></pre>
+        <ul>
+          <li>GET request</li>
+        </ul>
+        <pre><code class="language-js">http://localhost:3000/api/user/1</code></pre>
+        <p>returns</p>
+        <pre><code class="language-json">{
+                "action": "DATA",
+                "payload": {
+                  "id": 1,
+                  "name": "John"
+                },
+                "status": 404
+              }</code></pre>
+        <ul>
+          <li>GET request</li>
+        </ul>
+        <pre><code class="language-js">http://localhost:3000/api/user/</code></pre>
+        <p>returns</p>
+        <pre><code class="language-json">{
+                "action": "DATA",
+                "payload": {
+                  "error": "Resource not found"
+                },
+                "status": 404
+              }</code></pre>
+        <ul>
+          <li>POST request</li>
+        </ul>
+        <pre><code class="language-js">http://localhost:3000/api/user/</code></pre>
+        <p>returns</p>
+        <pre><code class="language-json">{
+                "action": "DATA",
+                "payload": {
+                  "id": 3,
+                  "name": "New User"
+                },
+                "status": 200
+              }</code></pre>
+      </div>
+
+      <!-- <div
         class="markdown-body docs-container docs-active"
         previewcontainer="true"
         style="padding: 20px"
@@ -28,7 +525,7 @@
           <a name="Version" class="reference-link"></a
           ><span class="header-link octicon octicon-link"></span>Version
         </h2>
-        <p>1.0.7</p>
+        <p>1.0.8</p>
         <h2 id="h2-installation">
           <a name="Installation" class="reference-link"></a
           ><span class="header-link octicon octicon-link"></span>Installation
@@ -148,7 +645,7 @@
         <p>
           The <code>request</code> field must contain the <code>path</code> (or
           the url) of the API endpoint<br />and the HTTP <code>method</code>, as
-          one of <code>"GET" | "POST" | "PUT" | "DELETE"</code> options.<br />If
+          one of <code>"GET" | "PATCH" | "POST" | "PUT" | "DELETE"</code> options.<br />If
           the method is not provided, the <code>"GET"</code> option will be used
           by default.
         </p>
@@ -329,7 +826,7 @@
           class="prettyprint linenums prettyprinted"
           style=""
         ><ol class="linenums"><li class="L0"><code class="language-json"><span class="pun">{</span></code></li><li class="L1"><code class="language-json"><span class="pln">  </span><span class="str">"action"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"DATA"</span><span class="pun">,</span></code></li><li class="L2"><code class="language-json"><span class="pln">  </span><span class="str">"payload"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></code></li><li class="L3"><code class="language-json"><span class="pln">    </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">3</span><span class="pun">,</span></code></li><li class="L4"><code class="language-json"><span class="pln">    </span><span class="str">"name"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"New User"</span></code></li><li class="L5"><code class="language-json"><span class="pln">  </span><span class="pun">},</span></code></li><li class="L6"><code class="language-json"><span class="pln">  </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">200</span></code></li><li class="L7"><code class="language-json"><span class="pun">}</span></code></li></ol></pre>
-      </div>
+      </div> -->
     </div>
   </body>
 </html>

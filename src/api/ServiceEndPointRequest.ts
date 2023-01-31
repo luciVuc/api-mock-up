@@ -1,6 +1,6 @@
 export class ServiceEndPointRequest implements IServiceEndPointRequest {
   public path: string;
-  public method: "GET" | "POST" | "PUT" | "DELETE";
+  public method: "GET" | "PATCH" | "POST" | "PUT" | "DELETE";
   public queryParams?: Record<string, string | number | boolean>;
   public headers?: Record<string, string | number | boolean>;
   public body?: Record<string, string | number | boolean>;
@@ -32,7 +32,7 @@ export class ServiceEndPointRequest implements IServiceEndPointRequest {
         },
         method: {
           type: "string",
-          enum: ["GET", "POST", "PUT", "DELETE"],
+          enum: ["GET", "PATCH", "POST", "PUT", "DELETE"],
         },
         queryParams: {
           type: "object",

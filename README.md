@@ -4,7 +4,7 @@ Emulates REST API services by mapping API Request endpoints to predefined API Re
 
 ## Version
 
-1.0.7
+1.0.8
 
 ## Installation
 
@@ -76,7 +76,7 @@ This JSON document must match the following JSON Schema:
         },
         "method": {
           "type": "string",
-          "enum": ["GET", "POST", "PUT", "DELETE"]
+          "enum": ["GET", "PATCH", "POST" "PUT", "DELETE"]
         },
         "queryParams": {
           "type": "object"
@@ -150,7 +150,7 @@ As the JSON Schema above indicates, the API Configuration document consists of
 Each API endpoint must contain a `request` field and a `response` field.
 
 The `request` field must contain the `path` (or the url) of the API endpoint
-and the HTTP `method`, as one of `"GET" | "POST" | "PUT" | "DELETE"` options.
+and the HTTP `method`, as one of `"GET" | "PATCH" | "POST" | "PUT" | "DELETE"` options.
 If the method is not provided, the `"GET"` option will be used by default.
 
 Additionally, the `request` may contain optional fields like:

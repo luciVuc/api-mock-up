@@ -6,7 +6,7 @@ declare interface IServiceError {
 
 declare interface IServiceEndPointRequest {
   path: string;
-  method: "GET" | "POST" | "PUT" | "DELETE";
+  method: "GET" | "PATCH" | "POST" | "PUT" | "DELETE";
   queryParams?: Record<string, string | number | boolean>;
   headers?: Record<string, string | number | boolean>;
   body?: Record<string, string | number | boolean>;
